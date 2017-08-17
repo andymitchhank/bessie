@@ -1,12 +1,16 @@
 import requests
-import urllib.parse
+
+try:
+	import urlparse as parse
+except:
+	from urllib import parse
 
 
 class InvalidApiPathException(Exception):
 	pass
 
 
-class Base:
+class Base(object):
 	
 	available_paths = []
 	separator = '/'
@@ -19,7 +23,7 @@ class Base:
 		
 	@property
 	def full_path(self):
-		return urllib.parse.urljoin(self.base_url, self.path)
+		return parse.urljoin(self.base_url, self.path)
 		
 	def __getattr__(self, name):
 		new_path =self.separator.join((self.path, name)) if self.path else name
