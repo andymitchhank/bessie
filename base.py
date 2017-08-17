@@ -10,7 +10,7 @@ class InvalidApiPathException(Exception):
 	pass
 
 
-class Base(object):
+class BaseClient(object):
 	
 	available_paths = []
 	separator = '/'
