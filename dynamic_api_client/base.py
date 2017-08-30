@@ -1,3 +1,4 @@
+from functools import partial
 import requests
 
 try:
@@ -19,6 +20,7 @@ class BaseClient(object):
 		self.base_url = base_url
 		self.path = path
 		self.kwargs = kwargs
+		self._define_convenience_methods()
 		self._prepare_request()
 		
 	@property
@@ -42,10 +44,11 @@ class BaseClient(object):
 		self.request.method = method
 		self.request.data = kwargs
 		return requests.session().send(self.request.prepare())
-		
-	def post(self, **kwargs):
-		return self._send_request('POST', **kwargs)
-		
-	def get(self, **kwargs):
-		return self._send_request('GET', **kwargs)
-		
+
+	def _define_convenience_methods(self):
+		actions = dict(post='POST', get='GET', put='PUT', patch='PATCH', delete='DELETE', options='OPTIONS', head='HEAD')
+
+		for key, value in actions.items():
+			setattr(self, key, partial(self._send_request, value))
+
+
