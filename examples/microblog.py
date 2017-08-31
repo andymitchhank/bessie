@@ -1,4 +1,4 @@
-from dynamic_api_client import BaseClient
+from bessie import BaseClient
 
 class MicroBlogApi(BaseClient):
 

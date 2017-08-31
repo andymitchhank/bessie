@@ -1,1 +1,2 @@
-# DynamicApi
+# Bessie - Base API Client
+
