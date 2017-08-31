@@ -1,3 +1,5 @@
+
+from getpass import getpass
 from bessie import BaseClient
 
 class MicroBlogApi(BaseClient):
@@ -16,7 +18,10 @@ class MicroBlogApi(BaseClient):
 
 
 if __name__ == '__main__':
-	mba = MicroBlogApi(token='')
+	token = getpass('Token... ')
+	mba = MicroBlogApi(token=token)
+
+	# GET - https://micro.blog/posts/all
 	posts = mba.posts.all.get()
 
 	print(posts.status_code, posts.reason)
