@@ -46,9 +46,9 @@ class BaseClient(object):
 		return requests.session().send(self.request.prepare())
 
 	def _define_convenience_methods(self):
-		actions = dict(post='POST', get='GET', put='PUT', patch='PATCH', delete='DELETE', options='OPTIONS', head='HEAD')
+		actions = ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
 
-		for key, value in actions.items():
-			setattr(self, key, partial(self._send_request, value))
+		for action in actions:
+			setattr(self, action.lower(), partial(self._send_request, action))
 
 
