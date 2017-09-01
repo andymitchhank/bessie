@@ -1,4 +1,3 @@
-
 from getpass import getpass
 from bessie import BaseClient
 
@@ -6,10 +5,11 @@ class MicroBlogApi(BaseClient):
 
 	available_paths = ['POST account/signin', 'GET posts/all']
 	separator = '/'
+	base_url='https://micro.blog'
 
-	def __init__(self, base_url='https://micro.blog', path='', token=''):
+	def __init__(self, path='', token=''):
 		self.token = token
-		super(self.__class__, self).__init__(base_url, path, token=token)
+		super(self.__class__, self).__init__(path, token=token)
 
 	# override method from BaseClient to inject Authorization header
 	def _prepare_request(self):

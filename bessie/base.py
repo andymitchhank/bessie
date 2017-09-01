@@ -15,9 +15,9 @@ class BaseClient(object):
 	
 	available_paths = []
 	separator = '/'
+	base_url = ''
 
-	def __init__(self, base_url, path='', **kwargs):
-		self.base_url = base_url
+	def __init__(self, path='', **kwargs):
 		self.path = path
 		self.kwargs = kwargs
 		self._define_convenience_methods()
@@ -29,7 +29,7 @@ class BaseClient(object):
 		
 	def __getattr__(self, name):
 		new_path =self.separator.join((self.path, name)) if self.path else name
-		return self.__class__(self.base_url, new_path, **self.kwargs)
+		return self.__class__(new_path, **self.kwargs)
 		
 	def _check_if_valid_path(self, method):
 		if self.available_paths and '{} {}'.format(method, self.path) not in self.available_paths:
