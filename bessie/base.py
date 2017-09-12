@@ -20,7 +20,7 @@ class BaseClient(object):
 	def __init__(self, path='', **kwargs):
 		self.path = path
 		self.kwargs = kwargs
-		self._define_convenience_methods()
+		self.__define_convenience_methods()
 		self._prepare_request()
 		
 	@property
@@ -45,7 +45,7 @@ class BaseClient(object):
 		self.request.data = kwargs
 		return requests.session().send(self.request.prepare())
 
-	def _define_convenience_methods(self):
+	def __define_convenience_methods(self):
 		actions = ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
 
 		for action in actions:
