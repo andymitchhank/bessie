@@ -7,13 +7,13 @@ except:
 	from urllib import parse
 
 
-class InvalidApiPathException(Exception):
+class InvalidEndpointException(Exception):
 	pass
 
 
 class BaseClient(object):
 	
-	available_paths = []
+	endpoints = []
 	separator = '/'
 	base_url = ''
 
@@ -28,21 +28,38 @@ class BaseClient(object):
 		return parse.urljoin(self.base_url, self.path)
 		
 	def __getattr__(self, name):
-		new_path =self.separator.join((self.path, name)) if self.path else name
+		new_path = self.separator.join((self.path, name)) if self.path else name
 		return self.__class__(new_path, **self.kwargs)
-		
-	def _check_if_valid_path(self, method):
-		if self.available_paths and '{} {}'.format(method, self.path) not in self.available_paths:
-			raise InvalidApiPathException('{} {} is not a valid path'.format(method, self.path))
+
+	def _find_endpoint(self, method):
+		endpoint = None
+		to_match = '{} {}'.format(method, self.path)
+
+		for e in self.endpoints:
+			if e.match_exact(to_match):
+				endpoint = e
+
+		if not endpoint:
+			for e in self.endpoints:
+				if e.match_with_path_params(to_match):
+					endpoint = e
+
+		if not endpoint:
+			raise InvalidEndpointException('{} is not a valid endpoint.'.format(to_match))
+
+		return endpoint
 			
 	def _prepare_request(self):
 		self.request = requests.Request()
 		
 	def _send_request(self, method, **kwargs):
-		self._check_if_valid_path(method)
+		endpoint = self._find_endpoint(method)
+		endpoint.validate(kwargs)
+
 		self.request.url = self.full_path
 		self.request.method = method
 		self.request.data = kwargs
+
 		return requests.session().send(self.request.prepare())
 
 	def __define_convenience_methods(self):
