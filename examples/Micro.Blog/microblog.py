@@ -1,9 +1,12 @@
 from getpass import getpass
 from bessie import BaseClient
 
+import config 
+
+
 class MicroBlogApi(BaseClient):
 
-	available_paths = ['POST account/signin', 'GET posts/all']
+	endpoints = config.available_endpoints
 	separator = '/'
 	base_url='https://micro.blog'
 
