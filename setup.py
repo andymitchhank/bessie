@@ -11,7 +11,7 @@ with open('bessie/__init__.py', 'r') as f:
 with open('README.md', 'rb') as f:
     readme = f.read().decode('utf-8')
 
-REQUIRES = []
+REQUIRES = ['requests']
 
 setup(
     name='bessie',
