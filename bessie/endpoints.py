@@ -6,6 +6,9 @@ class RequiredParameterMissingError(Exception):
 
 class Endpoint(object):
 
+	path_param_matching_regex = r'<(\w+)>'
+	path_param_matching_sub = '[A-Za-z0-9]+'
+
 	def __init__(self, method, path, required_params=None):
 		self.method = method
 		self.path = path
@@ -19,7 +22,8 @@ class Endpoint(object):
 		return m == '{} {}'.format(self.method, self.path)
 
 	def match_with_path_params(self, m):
-		matching_path = re.compile('{} {}{}'.format(self.method, re.sub(r'<(\w+)>', '[A-Za-z0-9]+', self.path), '$'))
+		regex_substitution = re.sub(self.path_param_matching_regex, self.path_param_matching_sub, self.path)
+		matching_path = re.compile('{} {}{}'.format(self.method, regex_substitution, '$'))
 		return bool(matching_path.match(m))
 
 	def validate(self, params):
