@@ -10,9 +10,9 @@ class MicroBlogApi(BaseClient):
 	separator = '/'
 	base_url='https://micro.blog'
 
-	def __init__(self, path='', token=''):
+	def __init__(self, path='', path_params=None, token=''):
 		self.token = token
-		super(self.__class__, self).__init__(path, token=token)
+		super(self.__class__, self).__init__(path, path_params, token=token)
 
 	# override method from BaseClient to inject Authorization header
 	def _prepare_request(self):
