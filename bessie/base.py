@@ -17,32 +17,32 @@ class BaseClient(object):
 	separator = '/'
 	base_url = ''
 
-	def __init__(self, path='', **kwargs):
+	def __init__(self, path='', path_params=None, **kwargs):
 		self.path = path
+		self.path_params = path_params
+		if not self.path_params:
+			self.path_params = {}
+
 		self.kwargs = kwargs
 		self.__define_convenience_methods()
 		self._prepare_request()
 		
-	@property
-	def full_path(self):
-		return parse.urljoin(self.base_url, self.path)
+	def __call__(self, value):
+		path_param_key = self.path.split(self.separator)[-1]
+		self.path_params[path_param_key] = str(value)
+		return self
 		
 	def __getattr__(self, name):
 		new_path = self.separator.join((self.path, name)) if self.path else name
-		return self.__class__(new_path, **self.kwargs)
+		return self.__class__(new_path, self.path_params, **self.kwargs)
 
 	def _find_endpoint(self, method):
 		endpoint = None
 		to_match = '{} {}'.format(method, self.path)
 
 		for e in self.endpoints:
-			if e.match_exact(to_match):
+			if e.match(to_match):
 				endpoint = e
-
-		if not endpoint:
-			for e in self.endpoints:
-				if e.match_with_path_params(to_match):
-					endpoint = e
 
 		if not endpoint:
 			raise InvalidEndpointException('{} is not a valid endpoint.'.format(to_match))
@@ -51,15 +51,22 @@ class BaseClient(object):
 			
 	def _prepare_request(self):
 		self.request = requests.Request()
-		
-	def _send_request(self, method, **kwargs):
-		endpoint = self._find_endpoint(method)
-		endpoint.validate(kwargs)
 
-		self.request.url = self.full_path
+	def _finalize_request(self, method, **kwargs):
+		endpoint = self._find_endpoint(method)
+		endpoint.validate(kwargs, self.path_params)
+
+		url = parse.urljoin(self.base_url, endpoint.path)
+
+		for param, value in self.path_params.items():
+			url = url.replace('<{}>'.format(param), value)
+
+		self.request.url = url
 		self.request.method = method
 		self.request.data = kwargs
-
+		
+	def _send_request(self, method, **kwargs):
+		self._finalize_request(method, **kwargs)
 		return requests.session().send(self.request.prepare())
 
 	def __define_convenience_methods(self):
