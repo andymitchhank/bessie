@@ -1,28 +1,46 @@
 import pytest
 
-from bessie import *
+from bessie import Endpoint, RequiredParameterMissingError
+
+endpoint = Endpoint('GET', 'posts/all', ['user_id'])
+endpoint_with_path_params = Endpoint('GET', 'posts/all/<user_id>')
 
 def format_endpoint(method, path):
 	return '{} {}'.format(method, path) 
 
-def test_endpoint_match_exact():
-	path = 'posts/all'
-	method = 'GET'
+def test_match():
+	did_match = endpoint.match(format_endpoint(endpoint.method, endpoint.path))
+	assert did_match
 
-	e = Endpoint(method, path)
-	did_match = e.match_exact(format_endpoint(method, path))
-	assert did_match == True
+def test_method_does_not_match():
+	did_match = endpoint.match(format_endpoint('', endpoint.path))
+	assert not did_match
 
-def test_endpoint_match_with_path_params():
-	path = 'posts/all/<user_id>'
-	path_to_match = 'posts/all/12345'
-	method = 'GET'
+def test_path_does_not_match():
+	did_match = endpoint.match(format_endpoint(endpoint.method, ''))
+	assert not did_match
 
+def test_nothing_matches():
+	did_match = endpoint.match(format_endpoint('', ''))
+	assert not did_match
 
-	e = Endpoint(method, path)
-	did_match_exact = e.match_exact(format_endpoint(method, path_to_match))
-	assert did_match_exact == False
+def test_match_with_path_params():
+	path = endpoint_with_path_params.path.replace('<', '').replace('>', '')
+	did_match = endpoint_with_path_params.match(format_endpoint(endpoint_with_path_params.method, path))
+	assert did_match
 
-	did_match_with_path_params = e.match_with_path_params(format_endpoint(method, path_to_match))
-	assert did_match_with_path_params == True
+def test_validate_with_required_params():
+	assert endpoint.validate({'user_id': '12345'}, None) is None
+
+def test_invalid_required_params():
+	with pytest.raises(RequiredParameterMissingError):
+		endpoint.validate(None, None) 
+
+def test_validate_with_path_params():
+	assert endpoint_with_path_params.validate(None, {'user_id', '12345'}) is None
+
+def test_invalid_path_params():
+	with pytest.raises(RequiredParameterMissingError):
+		endpoint_with_path_params.validate(None, None) 
+
 
