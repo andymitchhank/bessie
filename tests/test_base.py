@@ -45,6 +45,6 @@ def test_final_request_replaces_path_params():
 	key = 'user_id'
 	value = 12345
 	path_param_call = client.posts.all.user_id(value)
-	path_param_call._finalize_request(endpoint_with_path_param.method)
+	path_param_call._finalize_request(endpoint_with_path_param.method, {})
 
 	assert path_param_call.request.url == 'posts/all/{}'.format(value)
