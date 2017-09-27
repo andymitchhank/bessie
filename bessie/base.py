@@ -12,9 +12,6 @@ except:
 class InvalidEndpointException(Exception):
 	pass
 
-class InvalidHookException(Exception):
-	pass
-
 
 class Hooks(Enum):
 	request_created_hook = 1
@@ -26,7 +23,6 @@ class Hooks(Enum):
 	@classmethod
 	def has_name(cls, name):
 		return any(name == item.name for item in cls)
-
 
 
 class BaseClient(object):
