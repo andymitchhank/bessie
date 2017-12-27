@@ -1,7 +1,6 @@
 [run]
 source =
     bessie
-    tests
 branch = True
 omit =
     bessie/cli.py
