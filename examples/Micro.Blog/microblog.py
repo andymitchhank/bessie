@@ -13,14 +13,10 @@ class MicroBlogApi(BaseClient):
 		self.token = token
 		super().__init__(path, path_params, token=token)
 
-	# hook in to add auth header
-	def request_created_hook(self):
+	# override method from BaseClient to inject Authorization header
+	def _create_request(self):
+		super()._create_request()
 		self.request.headers['Authorization'] = 'Token {}'.format(self.token)
-
-	# # could also override method from BaseClient to inject Authorization header
-	# def _create_request(self):
-	# 	super()._create_request()
-	# 	self.request.headers['Authorization'] = 'Token {}'.format(self.token)
 
 
 if __name__ == '__main__':

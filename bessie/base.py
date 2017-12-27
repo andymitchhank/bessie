@@ -13,18 +13,6 @@ class InvalidEndpointException(Exception):
 	pass
 
 
-class Hooks(Enum):
-	request_created_hook = 1
-
-	@classmethod
-	def has_value(cls, value):
-		return any(value == item.value for item in cls)
-
-	@classmethod
-	def has_name(cls, name):
-		return any(name == item.name for item in cls)
-
-
 class BaseClient(object):
 	
 	endpoints = []
@@ -41,7 +29,6 @@ class BaseClient(object):
 		self.__define_convenience_methods()
 
 		self._create_request()
-		self._run_hook(Hooks.request_created_hook.name)
 		
 	def __call__(self, value):
 		path_param_key = self.path.split(self.separator)[-1]
@@ -49,14 +36,8 @@ class BaseClient(object):
 		return self
 		
 	def __getattr__(self, name):
-		if not Hooks.has_name(name):
-			new_path = self.separator.join((self.path, name)) if self.path else name
-			return self.__class__(new_path, self.path_params, **self.kwargs)
-		return object.__getattribute__(self, name)
-
-	def _run_hook(self, name):
-		if hasattr(self, name):
-			getattr(self, name)()
+		new_path = self.separator.join((self.path, name)) if self.path else name
+		return self.__class__(new_path, self.path_params, **self.kwargs)
 
 	def _find_endpoint(self, method):
 		endpoint = None
@@ -90,7 +71,7 @@ class BaseClient(object):
 		self.request.url = self._build_url(endpoint.path)
 		self.request.data = payload
 		self.request.method = method
-		
+
 	def _send_request(self, method, **kwargs):
 		self._finalize_request(method, kwargs)
 		return requests.session().send(self.request.prepare())
