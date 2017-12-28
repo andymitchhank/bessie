@@ -1,5 +1,4 @@
 from functools import partial
-from enum import Enum
 
 import requests
 
@@ -69,17 +68,21 @@ class BaseClient(object):
 		self._validate_endpoint(endpoint, payload)
 
 		self.request.url = self._build_url(endpoint.path)
-		self.request.data = payload
+
+		if method == 'GET':
+			self.request.params = payload
+		else:
+			self.request.data = payload
+
 		self.request.method = method
 
 	def _send_request(self, method, **kwargs):
 		self._finalize_request(method, kwargs)
-		return requests.session().send(self.request.prepare())
+		prepped = self.request.prepare()
+		return requests.session().send(prepped)
 
 	def __define_convenience_methods(self):
 		actions = ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
 
 		for action in actions:
 			setattr(self, action.lower(), partial(self._send_request, action))
-
-
