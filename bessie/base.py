@@ -43,7 +43,7 @@ class BaseClient(object):
 		to_match = '{} {}'.format(method, self.path)
 
 		for e in self.endpoints:
-			if e.match(to_match):
+			if e.match(to_match, self.separator):
 				endpoint = e
 
 		if not endpoint:

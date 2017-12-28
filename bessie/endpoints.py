@@ -26,7 +26,7 @@ class Endpoint(object):
 
 		return part_to_match in possible_matches
 
-	def match(self, m):
+	def match(self, m, separator):
 		possible_paths = []
 
 		msplit = m.split(' ')
@@ -35,8 +35,8 @@ class Endpoint(object):
 		if self.method != method_to_match:
 			return False
 
-		parts = self.path.replace('<', '').replace('>', '').split('/')
-		parts_to_match = path_to_match.split('/')
+		parts = self.path.replace('<', '').replace('>', '').split(separator)
+		parts_to_match = path_to_match.split(separator)
 
 		if len(parts) != len(parts_to_match):
 			return False
