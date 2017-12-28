@@ -18,9 +18,35 @@ class Endpoint(object):
 	def __repr__(self):
 		return '{}({}, {})'.format(self.__class__.__name__, self.method, self.path)
 
+	def match_part(self, part, part_to_match):
+		if part[0] == '[' and part[-1] == ']':
+			possible_matches = part[1:-1].split(',')
+		else:
+			possible_matches = [part]
+
+		return part_to_match in possible_matches
+
 	def match(self, m):
-		matching_path = self.path.replace('<', '').replace('>', '')
-		return m == '{} {}'.format(self.method, matching_path)
+		possible_paths = []
+
+		msplit = m.split(' ')
+		method_to_match, path_to_match = msplit[0], msplit[1]
+
+		if self.method != method_to_match:
+			return False
+
+		parts = self.path.replace('<', '').replace('>', '').split('/')
+		parts_to_match = path_to_match.split('/')
+
+		if len(parts) != len(parts_to_match):
+			return False
+
+		for idx, part in enumerate(parts):
+			part_to_match = parts_to_match[idx]
+			if not self.match_part(part, part_to_match):
+				return False
+
+		return True
 
 	def validate(self, params=None, path_params=None):
 
