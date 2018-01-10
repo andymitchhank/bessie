@@ -1,6 +1,9 @@
 # Bessie - Base API Client
 
------
+[![Build Status](https://travis-ci.org/andymitchhank/bessie.svg?branch=master)](https://travis-ci.org/andymitchhank/bessie)
+[![Python](https://img.shields.io/pypi/pyversions/bessie.svg)](https://pypi.python.org/pypi/bessie/)
+[![Version](https://img.shields.io/pypi/v/bessie.svg)](https://pypi.python.org/pypi/bessie/)
+[![License](https://img.shields.io/pypi/l/bessie.svg)](https://pypi.python.org/pypi/bessie/)
 
 **Table of Contents**
 
@@ -19,7 +22,7 @@ The `BaseClient` class is designed to be subclassed. Each method is also designe
 
 ## Installation
 
-Bessie is not yet avaialbe on PyPI, but should be soon. You can always install it from the repository though. 
+Bessie is avaialbe on [PyPI](https://pypi.python.org/pypi/bessie/). 
 
 ## License
 
