@@ -2,7 +2,7 @@
   python:
     - "3.6"
   install:
-    - pip install -p Pipfile
+    - pip install -p
     - pip install .
   script:
     - pytest
