@@ -1,6 +1,9 @@
 # Bessie - Base API Client
 
 [![Build Status](https://travis-ci.org/andymitchhank/bessie.svg?branch=master)](https://travis-ci.org/andymitchhank/bessie)
+[![Python](https://img.shields.io/pypi/pyversions/bessie.svg)](https://pypi.python.org/pypi/bessie/)
+[![Version](https://img.shields.io/pypi/v/bessie.svg)](https://pypi.python.org/pypi/bessie/)
+[![License](https://img.shields.io/pypi/l/bessie.svg)](https://pypi.python.org/pypi/bessie/)
 
 **Table of Contents**
 
