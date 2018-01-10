@@ -19,12 +19,7 @@ class Endpoint(object):
 		return '{}({}, {})'.format(self.__class__.__name__, self.method, self.path)
 
 	def match_part(self, part, part_to_match):
-		if part[0] == '[' and part[-1] == ']':
-			possible_matches = part[1:-1].split(',')
-		else:
-			possible_matches = [part]
-
-		return part_to_match in possible_matches
+		return part == part_to_match
 
 	def match(self, m, separator):
 		possible_paths = []
