@@ -6,7 +6,6 @@ numbers = ['<number>', 'random']
 available_endpoints = [Endpoint('GET', f'{n}/{t}', None) for t in types for n in numbers] + [Endpoint('GET', f'{n}', None) for n in numbers]
 available_endpoints.append(Endpoint('GET', '<month>/<day>/date', None))
 
-print(available_endpoints)
 
 class NumbersApi(BaseClient):
 
